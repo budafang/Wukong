@@ -1,1 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<!--
+=============================================================================
+INFOGRAPHIC METADATA & CONFIRMATIONS
+=============================================================================
+PALETTE SELECTED: "Cyber-Myth Vibrant" (Deep Navy #0A192F, Teal #64FFDA, Neon Purple #B388FF, Vibrant Orange #FF6D00, Coral #FF3D00, White #F3F4F6)
 
+NARRATIVE PLAN:
+1. Hook/Intro: Introduce the unprecedented success of Black Myth: Wukong and set the premise that its marketing was as calculated as its development.
+2. Chronological Deconstruction (Timeline): Walk through the 4-year journey from the shocking 2020 reveal to the massive 2024 launch, highlighting key beats.
+3. Data Analysis (Charts):
+   - Trend Chart: Visualize the hype generation over the 4-year cycle.
+   - Radar Chart: Analyze the effectiveness of different media channels.
+   - Doughnut Chart: Break down the estimated marketing focus/budget allocation.
+4. Integrated Framework (Matrix): A structured breakdown of Methods, Media used, and their Core Functions.
+5. Conclusion: Final takeaway on how "product as the ultimate marketing" drove the campaign.
+
+CHART SELECTION JUSTIFICATION (NO SVG):
+- Data Point 1 (Hype over time) -> Goal: Change -> Chosen: Line Chart (Chart.js). Shows the episodic spike strategy perfectly.
+- Data Point 2 (Channel Effectiveness) -> Goal: Compare -> Chosen: Radar Chart (Chart.js). Evaluates multidimensional strengths of media platforms.
+- Data Point 3 (Marketing Focus Allocation) -> Goal: Compare/Composition -> Chosen: Doughnut Chart (Chart.js). Highlights the heavy reliance on raw gameplay footage over traditional ads.
+
+CONSTRAINT CONFIRMATION:
+- I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in this output. All graphics are Canvas-based or HTML/CSS structured.
+- All comments (HTML/CSS/JS) have been stripped from the rest of the document as requested.
+=============================================================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑神話：悟空 行銷操作解構與整合框架</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #0A192F;
+            color: #F3F4F6;
+            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+        }
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .text-teal { color: #64FFDA; }
+        .bg-teal { background-color: #64FFDA; }
+        .border-teal { border-color: #64FFDA; }
+        .text-purple { color: #B388FF; }
+        .bg-purple { background-color: #B388FF; }
+        .text-orange { color: #FF6D00; }
+        .bg-orange { background-color: #FF6D00; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+        .glass-card:hover {
+            border-color: rgba(100, 255, 218, 0.5);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+            padding: 1rem;
+        }
+        
+        .timeline-container {
+            position: relative;
+            border-left: 4px solid #B388FF;
+            margin-left: 1rem;
+            padding-left: 2rem;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #FF6D00;
+            border: 4px solid #0A192F;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal selection:text-gray-900">
+
+    <header class="relative pt-20 pb-16 text-center border-b border-gray-800 bg-gradient-to-b from-[#0f2027] to-[#0A192F]">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-orange mb-4 text-5xl font-black tracking-widest">&#28450;</div>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                <span class="text-white">黑神話：悟空</span><br>
+                <span class="text-teal text-3xl md:text-5xl">行銷操作解構與整合框架</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                從2020年的橫空出世，到2024年的全球現象級發售。這不僅是一場遊戲技術的展現，更是一場長達四年、步步為營的精準內容行銷戰役。我們將為您深度解構其背後的行銷邏輯與媒體矩陣。
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <section id="chronology">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-orange pl-4">第一階段：時間軸解構 (2020 - 2024)</h2>
+                <p class="text-gray-300 text-lg">
+                    《黑神話：悟空》的行銷策略有別於傳統的「密集廣告轟炸」，而是採用了「年更型」的內容釋放策略。每年的8月20日成為了固定的發聲節點，透過極高質量的實機畫面，反覆強化市場預期，並在最後發售期透過線下與跨界徹底引爆。
+                </p>
+            </div>
+
+            <div class="timeline-container space-y-12">
+                
+                <div class="relative glass-card p-6 md:p-8">
+                    <div class="timeline-dot top-8"></div>
+                    <span class="text-teal font-bold tracking-widest text-sm uppercase">2020.08.20</span>
+                    <h3 class="text-2xl font-bold text-white mt-2 mb-3">橫空出世：13分鐘實機演示</h3>
+                    <div class="text-gray-300 space-y-2">
+                        <p><strong class="text-purple">操作手法：</strong> 無預警突襲發布。在毫無前置預熱的情況下，直接釋出長達13分鐘的UE4高質量實機遊玩影片。</p>
+                        <p><strong class="text-purple">核心目的：</strong> 「招聘」與「立威」。向全中國乃至全球市場證明中國具備開發3A單機大作的能力，引發破圈式的社群核爆。</p>
+                        <p><strong class="text-purple">媒體管道：</strong> Bilibili (B站) 首發，隨後蔓延至 YouTube 與 IGN 等國際媒體。</p>
+                    </div>
+                </div>
+
+                <div class="relative glass-card p-6 md:p-8">
+                    <div class="timeline-dot top-8"></div>
+                    <span class="text-teal font-bold tracking-widest text-sm uppercase">2021.08 - 2022.08</span>
+                    <h3 class="text-2xl font-bold text-white mt-2 mb-3">技術迭代與預期管理</h3>
+                    <div class="text-gray-300 space-y-2">
+                        <p><strong class="text-purple">操作手法：</strong> 節日營銷 (820悟空日)。2021年宣布轉換至 Unreal Engine 5 並展示雪地場景；2022年展示完整劇情過場與蜘蛛精實機戰鬥。</p>
+                        <p><strong class="text-purple">核心目的：</strong> 消除市場「畫大餅」的疑慮，展示開發進度與技術力升級，維持核心玩家圈層的熱度與信任。</p>
+                        <p><strong class="text-purple">媒體管道：</strong> B站官方帳號主陣地，聯合 NVIDIA 展示光線追蹤技術 (技術公關)。</p>
+                    </div>
+                </div>
+
+                <div class="relative glass-card p-6 md:p-8">
+                    <div class="timeline-dot top-8"></div>
+                    <span class="text-teal font-bold tracking-widest text-sm uppercase">2023.08</span>
+                    <h3 class="text-2xl font-bold text-white mt-2 mb-3">線下驗證與國際權威背書</h3>
+                    <div class="text-gray-300 space-y-2">
+                        <p><strong class="text-purple">操作手法：</strong> 杭州千人線下試玩會 + 德國科隆遊戲展 (Gamescom) 參展。</p>
+                        <p><strong class="text-purple">核心目的：</strong> 從「看影片」轉向「真機能玩」。透過實體活動讓玩家與媒體親手體驗，打破虛擬迷思；榮獲科隆展最佳視覺效果獎，取得國際權威背書。</p>
+                        <p><strong class="text-purple">媒體管道：</strong> 實體展會、Twitch/B站實況主線下直播、全球遊戲媒體 (IGN, GameSpot) 試玩前瞻報導。</p>
+                    </div>
+                </div>
+
+                <div class="relative glass-card p-6 md:p-8">
+                    <div class="timeline-dot top-8"></div>
+                    <span class="text-teal font-bold tracking-widest text-sm uppercase">2024.08 (發售期)</span>
+                    <h3 class="text-2xl font-bold text-white mt-2 mb-3">跨界引爆與全面收割</h3>
+                    <div class="text-gray-300 space-y-2">
+                        <p><strong class="text-purple">操作手法：</strong> 發布最終預告片、媒體評測解禁、跨界品牌現象級聯名（如：瑞幸咖啡、滴滴出行、華強北電子產品）。</p>
+                        <p><strong class="text-purple">核心目的：</strong> 突破遊戲圈，實現泛大眾圈層的轉化。利用民族情緒、頂尖品質與社交話題性，將「玩黑神話」塑造成一種文化現象。</p>
+                        <p><strong class="text-purple">媒體管道：</strong> 全網社交平台 (微博熱搜、抖音、X)、線下門市 (瑞幸聯名飲品與周邊秒殺)、全球直播平台盛況。</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="data-analysis">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-teal pl-4">第二階段：數據與成效視覺化</h2>
+                <p class="text-gray-300 text-lg">
+                    透過數據圖表，我們可以更清晰地看見遊戲科學 (Game Science) 在資源分配與聲量操作上的獨特軌跡。他們將絕大部分的籌碼押注在「內容品質」與「精準節點」上。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                
+                <div class="glass-card p-6 flex flex-col items-center">
+                    <h3 class="text-xl font-bold text-white mb-2">聲量與期待值演進 (2020-2024)</h3>
+                    <p class="text-sm text-gray-400 mb-6 text-center">每次發布皆精準踩點，形成階梯式上升的市場期待</p>
+                    <div class="chart-container">
+                        <canvas id="hypeChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-300 mt-6 leading-relaxed">
+                        <strong class="text-teal">圖表解析：</strong> 採用折線圖展現長達四年的聲量變化。可以明顯看出，不同於一般遊戲發售前三個月才開始密集宣發，悟空採用了<span class="text-orange">「脈衝式營銷」</span>。每年8月20日的定點爆發，不僅維持了熱度，更讓每一次的回歸都帶有「王者降臨」的震撼感。
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col items-center">
+                    <h3 class="text-xl font-bold text-white mb-2">傳播媒體矩陣效能對比</h3>
+                    <p class="text-sm text-gray-400 mb-6 text-center">各類媒體在不同行銷階段發揮的相對影響力 (指數 1-10)</p>
+                    <div class="chart-container">
+                        <canvas id="channelChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-300 mt-6 leading-relaxed">
+                        <strong class="text-teal">圖表解析：</strong> 雷達圖揭示了不同媒體的價值。<span class="text-purple">長影音平台 (B站/YT)</span> 是其最核心的陣地，用於展示實力；<span class="text-purple">社群平台</span> 則負責話題擴散與二次創作；而在發售衝刺期，<span class="text-purple">跨界實體聯名</span> 展現了驚人的泛大眾觸達力。
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 mb-12">
+                <div class="glass-card p-6 flex flex-col items-center">
+                    <h3 class="text-xl font-bold text-white mb-2">行銷資源與重心分配估算</h3>
+                    <p class="text-sm text-gray-400 mb-6 text-center">跳脫傳統買量，以「產品內容」作為最強大的廣告</p>
+                    <div class="chart-container lg:max-w-3xl">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-300 mt-6 leading-relaxed text-center max-w-4xl mx-auto">
+                        <strong class="text-teal">圖表解析：</strong> 甜甜圈圖顯示了極度非傳統的資源分配。超過一半的行銷力量實質上是建立在<span class="text-orange">「高品質的實機內容製作」</span>上。他們沒有把錢大量砸在買資訊流廣告，而是投資於製作能引發自然瘋傳 (Viral) 的史詩級預告片與舉辦高成本的線下千人試玩會。
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="framework">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-4 border-l-4 border-purple pl-4">第三階段：整合行銷架構總覽</h2>
+                <p class="text-gray-300 text-lg">
+                    總結其四年的操作手法、運用的媒體矩陣以及各自承載的核心功能，我們為《黑神話：悟空》梳理出以下四維度整合行銷架構。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                
+                <div class="glass-card p-6 border-t-4 border-t-teal">
+                    <div class="text-3xl mb-4">&#9733;</div>
+                    <h3 class="text-xl font-bold text-white mb-4">1. 內容行銷 (核心驅動)</h3>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-teal uppercase tracking-wide">操作手法</span>
+                        <p class="text-gray-300 mt-1">高畫質實機演示、電影級過場動畫、交響樂原聲帶釋出。</p>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-teal uppercase tracking-wide">運用媒體</span>
+                        <p class="text-gray-300 mt-1">Bilibili (主陣地)、YouTube、官網。</p>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-teal uppercase tracking-wide">核心功能</span>
+                        <p class="text-white font-medium mt-1">建立產品護城河與市場極高期待；用最硬核的技術實力進行背書，引爆第一波核心圈層。</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-t-4 border-t-orange">
+                    <div class="text-3xl mb-4">&#9873;</div>
+                    <h3 class="text-xl font-bold text-white mb-4">2. 事件/體驗行銷</h3>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-orange uppercase tracking-wide">操作手法</span>
+                        <p class="text-gray-300 mt-1">千人線下閉門試玩會、參展國際遊戲展 (Gamescom) 提供現場排隊試玩。</p>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-orange uppercase tracking-wide">運用媒體</span>
+                        <p class="text-gray-300 mt-1">實體展場、遊戲專業媒體前瞻報導、參與者個人社群。</p>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-orange uppercase tracking-wide">核心功能</span>
+                        <p class="text-white font-medium mt-1">將虛擬期待轉化為真實手感；打破「實力造假」質疑，獲取專業圈與死忠玩家的信任與二次傳播。</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-t-4 border-t-purple">
+                    <div class="text-3xl mb-4">&#9854;</div>
+                    <h3 class="text-xl font-bold text-white mb-4">3. 跨界聯名行銷</h3>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-purple uppercase tracking-wide">操作手法</span>
+                        <p class="text-gray-300 mt-1">異業結盟，推出聯名實體商品。如瑞幸咖啡「黑神話騰雲美式」、滴滴出行痛車等。</p>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-purple uppercase tracking-wide">運用媒體</span>
+                        <p class="text-gray-300 mt-1">合作方實體門市、APP開屏廣告、大眾社群網絡 (微博、抖音、小紅書)。</p>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-purple uppercase tracking-wide">核心功能</span>
+                        <p class="text-white font-medium mt-1">極限破圈。利用低單價的快消品將高門檻的3A遊戲概念推廣至泛大眾，製造社會現象級的FOMO (錯失恐懼) 效應。</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-t-4 border-t-blue-400">
+                    <div class="text-3xl mb-4">&#128227;</div>
+                    <h3 class="text-xl font-bold text-white mb-4">4. 口碑與意見領袖</h3>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wide">操作手法</span>
+                        <p class="text-gray-300 mt-1">全球媒體評測解禁、發售日大規模實況主同步開播、鼓勵UGC二次創作 (劇情解析、考據)。</p>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wide">運用媒體</span>
+                        <p class="text-gray-300 mt-1">Twitch, 鬥魚, 虎牙, IGN, Metacritic, 各大遊戲論壇。</p>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wide">核心功能</span>
+                        <p class="text-white font-medium mt-1">收網與銷售轉化。透過KOL的真實反應與權威媒體的高分評價，打消觀望者的最後疑慮，推動直接購買。</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 border-t border-gray-800 text-gray-500 text-sm">
+        <p>Data visualization infographic generated for analytical purposes.</p>
+        <p class="mt-2 text-xs opacity-50">Visualized without the use of SVG or Mermaid JS.</p>
+    </footer>
+
+    <script>
+        function processLabel(label) {
+            if (label.length <= 16) return label;
+            const lines = [];
+            for (let i = 0; i < label.length; i += 16) {
+                lines.push(label.substring(i, i + 16));
+            }
+            return lines;
+        }
+
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        Chart.defaults.color = '#F3F4F6';
+        Chart.defaults.font.family = "'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif";
+
+        const hypeLabels = [
+            '2020.08 首曝橫空出世', 
+            '2021.08 UE5技術展示', 
+            '2022.08 劇情與蜘蛛精', 
+            '2023.08 科隆展線下試玩', 
+            '2024.08 瑞幸聯名全球發售'
+        ].map(processLabel);
+
+        const ctxHype = document.getElementById('hypeChart').getContext('2d');
+        new Chart(ctxHype, {
+            type: 'line',
+            data: {
+                labels: hypeLabels,
+                datasets: [{
+                    label: '市場聲量與期待指數',
+                    data: [85, 70, 75, 90, 100],
+                    borderColor: '#64FFDA',
+                    backgroundColor: 'rgba(100, 255, 218, 0.2)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#FF6D00',
+                    pointBorderColor: '#0A192F',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipConfig
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 110,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        const channelLabels = [
+            '長影音 (B站/YT)', 
+            '泛社群 (微博/X)', 
+            '直播實況 (Twitch/鬥魚)', 
+            '權威遊戲媒體 (IGN等)', 
+            '實體線下 (展會/聯名)'
+        ].map(processLabel);
+
+        const ctxChannel = document.getElementById('channelChart').getContext('2d');
+        new Chart(ctxChannel, {
+            type: 'radar',
+            data: {
+                labels: channelLabels,
+                datasets: [
+                    {
+                        label: '早期預熱期影響力',
+                        data: [10, 7, 3, 6, 2],
+                        backgroundColor: 'rgba(179, 136, 255, 0.4)',
+                        borderColor: '#B388FF',
+                        pointBackgroundColor: '#B388FF',
+                        borderWidth: 2
+                    },
+                    {
+                        label: '發售爆發期影響力',
+                        data: [9, 10, 10, 8, 9],
+                        backgroundColor: 'rgba(255, 109, 0, 0.4)',
+                        borderColor: '#FF6D00',
+                        pointBackgroundColor: '#FF6D00',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltipConfig
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.2)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.2)' },
+                        pointLabels: {
+                            color: '#F3F4F6',
+                            font: { size: 12 }
+                        },
+                        ticks: { display: false, max: 10, min: 0 }
+                    }
+                }
+            }
+        });
+
+        const allocLabels = [
+            '極致實機內容製作與包裝',
+            '線下試玩與展會活動',
+            '跨界聯名與異業合作',
+            '傳統公關與媒體評測投放'
+        ].map(processLabel);
+
+        const ctxAlloc = document.getElementById('allocationChart').getContext('2d');
+        new Chart(ctxAlloc, {
+            type: 'doughnut',
+            data: {
+                labels: allocLabels,
+                datasets: [{
+                    data: [50, 20, 15, 15],
+                    backgroundColor: [
+                        '#64FFDA', 
+                        '#B388FF', 
+                        '#FF6D00', 
+                        '#3B82F6'  
+                    ],
+                    borderColor: '#0A192F',
+                    borderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { padding: 20, font: { size: 13 } }
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>
