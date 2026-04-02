@@ -1,21 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<!--
-I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the output.
-All visualizations are rendered using Canvas (Chart.js) or standard HTML/CSS.
-
-NARRATIVE PLAN:
-1. Introduction: Hook the student into the role of a Marketing Director.
-2. Strategy Canvas: Allow students to brainstorm and write down their 4-phase marketing plan.
-3. Budget Simulator: Let students allocate resources based on their canvas, providing real-time outcome predictions.
-4. The Reveal (Real Case): Show the actual chronological timeline, data visualizations, and framework used by Game Science for Black Myth: Wukong to compare against the student's plan.
-
-CHART SELECTION JUSTIFICATION (NO SVG):
-- Simulator Allocation -> Goal: Composition -> Chosen: Doughnut Chart (Chart.js). Dynamic updates based on user sliders.
-- Hype over time -> Goal: Change -> Chosen: Line Chart (Chart.js). Visualizes chronological hype trends.
-- Channel Effectiveness -> Goal: Compare -> Chosen: Radar Chart (Chart.js). Compares multidimensional media strengths.
-- Actual Allocation -> Goal: Composition -> Chosen: Doughnut Chart (Chart.js). Shows the real strategy breakdown.
--->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -112,20 +96,6 @@ CHART SELECTION JUSTIFICATION (NO SVG):
             opacity: 0.5;
         }
 
-        .reveal-overlay {
-            position: relative;
-        }
-        .reveal-overlay::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0; height: 100%;
-            background: linear-gradient(to bottom, transparent, #0A192F 80%);
-            pointer-events: none;
-            transition: opacity 1s ease;
-        }
-        .revealed::after {
-            opacity: 0;
-        }
         .hidden-content {
             display: none;
             opacity: 0;
@@ -135,6 +105,27 @@ CHART SELECTION JUSTIFICATION (NO SVG):
             display: block;
             opacity: 1;
         }
+        
+        .expandable-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+        .expandable-details.expanded {
+            max-height: 800px;
+            opacity: 1;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #64FFDA;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="antialiased selection:bg-teal selection:text-gray-900">
@@ -163,7 +154,7 @@ CHART SELECTION JUSTIFICATION (NO SVG):
             <span class="text-white">你會如何推廣一款未知的大作？</span>
         </h1>
         <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-            想像一下：你的團隊花費巨大心血，開發了一款極具潛力的單機動作遊戲。但市場對你們充滿懷疑，認為「這是不可能的任務」。你擁有四年的時間來佈局。請先寫下你的行銷策略，再進行資源分配，最後系統將預測你的成敗，並為你揭曉業界傳奇《黑神話：悟空》的真實打法。
+            想像一下：你的團隊花費巨大心血，開發了一款極具潛力的單機動作遊戲。但市場對你們充滿懷疑，認為「這是不可能的任務」。你擁有四年的時間來佈局。請先寫下你的行銷策略，再進行資源分配，系統將為你進行企劃診斷，並為你揭曉業界傳奇《黑神話：悟空》的真實打法。
         </p>
         <a href="#step2-canvas" class="inline-block bg-teal text-gray-900 font-bold py-3 px-8 rounded-full hover:bg-white transition transform hover:scale-105 shadow-[0_0_15px_rgba(100,255,218,0.4)]">
             接受挑戰，開始規劃
@@ -183,69 +174,112 @@ CHART SELECTION JUSTIFICATION (NO SVG):
                 <div class="bg-gray-800/40 border border-gray-700 p-6 rounded-xl relative overflow-hidden group">
                     <div class="absolute top-0 left-0 w-1 h-full bg-teal group-hover:w-2 transition-all"></div>
                     <h5 class="text-teal font-bold text-lg mb-2 pl-2">Phase 1: 破局首曝 (Year 1)</h5>
-                    <p class="text-sm text-gray-400 mb-3 pl-2">你是一個無人知曉的團隊。你要如何發布第一則消息，才能瞬間震撼市場？</p>
-                    <textarea class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：花重金買下所有遊戲媒體頭條，發布CG動畫..."></textarea>
+                    <p class="text-sm text-gray-400 mb-3 pl-2">無人知曉的團隊，如何發布第一則消息瞬間震撼市場？</p>
+                    <textarea id="canvas-q1" class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：花重金買下所有遊戲媒體頭條，發布CG動畫..."></textarea>
                 </div>
                 <div class="bg-gray-800/40 border border-gray-700 p-6 rounded-xl relative overflow-hidden group">
                     <div class="absolute top-0 left-0 w-1 h-full bg-teal group-hover:w-2 transition-all"></div>
                     <h5 class="text-teal font-bold text-lg mb-2 pl-2">Phase 2: 預期管理 (Year 2-3)</h5>
-                    <p class="text-sm text-gray-400 mb-3 pl-2">距離發售還有兩年。你要如何保持玩家的熱度，又不會讓他們覺得你在「畫大餅」？</p>
-                    <textarea class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：每個月發布開發日誌，與玩家緊密互動..."></textarea>
+                    <p class="text-sm text-gray-400 mb-3 pl-2">距離發售還有兩年。如何保持熱度又不被認為在「畫大餅」？</p>
+                    <textarea id="canvas-q2" class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：每個月發布開發日誌，與玩家緊密互動..."></textarea>
                 </div>
                 <div class="bg-gray-800/40 border border-gray-700 p-6 rounded-xl relative overflow-hidden group">
                     <div class="absolute top-0 left-0 w-1 h-full bg-teal group-hover:w-2 transition-all"></div>
                     <h5 class="text-teal font-bold text-lg mb-2 pl-2">Phase 3: 信任驗證 (Year 3)</h5>
-                    <p class="text-sm text-gray-400 mb-3 pl-2">市場開始質疑你的遊戲根本跑不動。你要用什麼具體行動來打破這個嚴重的公關危機？</p>
-                    <textarea class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：找百萬訂閱的實況主工商，證明遊戲好玩..."></textarea>
+                    <p class="text-sm text-gray-400 mb-3 pl-2">市場質疑遊戲根本跑不動。用什麼具體行動打破公關危機？</p>
+                    <textarea id="canvas-q3" class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：找百萬訂閱的實況主工商，證明遊戲好玩..."></textarea>
                 </div>
                 <div class="bg-gray-800/40 border border-gray-700 p-6 rounded-xl relative overflow-hidden group">
                     <div class="absolute top-0 left-0 w-1 h-full bg-teal group-hover:w-2 transition-all"></div>
                     <h5 class="text-teal font-bold text-lg mb-2 pl-2">Phase 4: 破圈收割 (發售月)</h5>
-                    <p class="text-sm text-gray-400 mb-3 pl-2">遊戲終於要上了。你要如何讓平時不玩單機遊戲的大眾，也產生「我也必須買來玩」的錯覺？</p>
-                    <textarea class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：在捷運站買滿實體廣告，與知名潮牌聯名..."></textarea>
+                    <p class="text-sm text-gray-400 mb-3 pl-2">如何讓平時不玩單機遊戲的大眾，也產生購買慾望？</p>
+                    <textarea id="canvas-q4" class="w-full bg-black/50 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-teal resize-none transition-colors" rows="4" placeholder="例如：在捷運站買滿實體廣告，與知名潮牌聯名..."></textarea>
                 </div>
             </div>
             
             <div class="mt-10 text-center">
-                <a href="#step3-simulator" class="inline-block border-2 border-teal text-teal font-bold py-2 px-8 rounded-full hover:bg-teal hover:text-gray-900 transition">
-                    企劃擬定完成，前往配置預算 ↓
-                </a>
+                <button onclick="analyzeCanvas()" id="analyze-btn" class="inline-block border-2 border-teal text-teal font-bold py-3 px-10 rounded-full hover:bg-teal hover:text-gray-900 transition text-lg">
+                    提交企劃，進行戰略診斷
+                </button>
+            </div>
+
+            <div id="diagnosis-loading" class="hidden-content mt-8 flex flex-col items-center justify-center">
+                <div class="spinner mb-4"></div>
+                <p class="text-teal font-bold tracking-widest">系統解析中...</p>
+            </div>
+
+            <div id="diagnosis-result" class="hidden-content mt-10 glass-card p-8 border-t-4 border-t-teal relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">&#128187;</div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <span class="text-teal">&#9881;</span> 企劃戰略解析報告
+                </h3>
+                <p id="diagnosis-summary" class="text-gray-300 mb-6 leading-relaxed"></p>
+                
+                <div class="bg-black/40 rounded-lg p-6 border border-gray-700">
+                    <h4 class="text-white font-bold mb-4 border-b border-gray-700 pb-2">執行前，請思考以下三個商業檢核點：</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <span class="text-orange text-lg">&#9888;</span>
+                            <div>
+                                <strong class="text-gray-200">爆發力 vs. 持續力：</strong>首曝的驚豔感容易衰退。你的 Phase 2 是否有足夠的「技術力展示」來支撐玩家的長期等待，而不是只有社群發文？
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-orange text-lg">&#9888;</span>
+                            <div>
+                                <strong class="text-gray-200">容錯空間與真實性：</strong>面對 Phase 3 的信任危機，過度包裝的廣告往往會有反效果。你的計畫是否敢於讓玩家「看到缺點」以換取「真實感」？
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-orange text-lg">&#9888;</span>
+                            <div>
+                                <strong class="text-gray-200">文化共鳴深度：</strong>Phase 4 的破圈，如果只是單純買版位，轉化率極低。你的聯名策略是否具備引發「社交話題」與「FOMO (錯失恐懼)」的潛力？
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <a href="#step3-simulator" onclick="document.getElementById('step3-simulator').classList.remove('hidden-content'); document.getElementById('step3-simulator').classList.add('show-content');" class="inline-block bg-teal text-gray-900 font-bold py-2 px-8 rounded-full hover:bg-white transition shadow-lg">
+                        帶著這份思考，前往配置預算 ↓
+                    </a>
+                </div>
             </div>
         </section>
 
-        <section id="step3-simulator" class="pt-16">
+        <section id="step3-simulator" class="hidden-content pt-16">
             <div class="text-center mb-12 relative">
                 <span class="text-purple font-black text-6xl opacity-10 absolute left-1/2 -translate-x-1/2 -mt-6">BUDGET</span>
                 <h2 class="text-3xl font-bold text-white relative z-10">📊 資源配置與成果模擬</h2>
-                <p class="text-gray-400 mt-2">根據你上方的企劃，拖曳拉桿分配你 100% 的資源。系統將依此預測你的專案結局。</p>
+                <p class="text-gray-400 mt-2">根據你的企劃，拖曳拉桿分配 100% 的資源。系統將依此預測專案結局。</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-[#0d2240] p-8 rounded-2xl border border-gray-700 shadow-2xl">
                 <div class="space-y-8">
                     <div>
                         <div class="flex justify-between mb-2">
-                            <label class="font-bold text-white text-sm">極致實機內容製作 (當作廣告在做遊戲內容)</label>
+                            <label class="font-bold text-white text-sm">極致實機內容製作 (極高成本研發與影片化)</label>
                             <span id="valContent" class="text-teal font-bold">25%</span>
                         </div>
                         <input type="range" id="sliderContent" min="0" max="100" value="25" oninput="updateSimulator()">
                     </div>
                     <div>
                         <div class="flex justify-between mb-2">
-                            <label class="font-bold text-white text-sm">數位廣告買量投放 (FB/IG/Google版位)</label>
+                            <label class="font-bold text-white text-sm">數位廣告買量投放 (全球媒體買版位/社群廣告)</label>
                             <span id="valAd" class="text-purple font-bold">25%</span>
                         </div>
                         <input type="range" id="sliderAd" min="0" max="100" value="25" oninput="updateSimulator()">
                     </div>
                     <div>
                         <div class="flex justify-between mb-2">
-                            <label class="font-bold text-white text-sm">實體體驗與大型展會 (線下千人公關活動)</label>
+                            <label class="font-bold text-white text-sm">實體體驗與大型展會 (高成本線下公關/試玩會)</label>
                             <span id="valPR" class="text-orange font-bold">25%</span>
                         </div>
                         <input type="range" id="sliderPR" min="0" max="100" value="25" oninput="updateSimulator()">
                     </div>
                     <div>
                         <div class="flex justify-between mb-2">
-                            <label class="font-bold text-white text-sm">跨界聯名與網紅業配 (異業結盟/KOL)</label>
+                            <label class="font-bold text-white text-sm">跨界聯名與大眾行銷 (異業結盟/電視廣告)</label>
                             <span id="valCross" class="text-blue-400 font-bold">25%</span>
                         </div>
                         <input type="range" id="sliderCross" min="0" max="100" value="25" oninput="updateSimulator()">
@@ -275,9 +309,9 @@ CHART SELECTION JUSTIFICATION (NO SVG):
         <div id="step4-reveal" class="hidden-content">
             <div class="text-center mb-16 relative">
                 <span class="text-orange font-black text-6xl opacity-10 absolute left-1/2 -translate-x-1/2 -mt-6">THE TRUTH</span>
-                <h2 class="text-4xl font-extrabold text-white relative z-10 border-b-4 border-orange inline-block pb-2">真實案例解構</h2>
+                <h2 class="text-4xl font-extrabold text-white relative z-10 border-b-4 border-orange inline-block pb-2">真實案例：黑神話的破局之道</h2>
                 <p class="text-gray-300 mt-6 text-lg max-w-3xl mx-auto">
-                    遊戲科學 (Game Science) 採用了極度非傳統的「產品即行銷 (Product-Led Growth)」策略。看看你的規劃與他們的實際操作有多少相似之處？
+                    遊戲科學 (Game Science) 採用了極度非傳統的「產品即行銷 (Product-Led Growth)」策略。點擊下方各階段的「深度解析」，看看你的規劃與他們的實際操作差異在哪？
                 </p>
             </div>
 
@@ -286,74 +320,95 @@ CHART SELECTION JUSTIFICATION (NO SVG):
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                     <div class="glass-card p-6 flex flex-col items-center col-span-1 lg:col-span-1">
                         <h4 class="text-lg font-bold text-white mb-2">真實資源分配 (估算)</h4>
-                        <p class="text-xs text-gray-400 mb-4 text-center">捨棄買量，將經費全砸在實機與線下</p>
+                        <p class="text-xs text-gray-400 mb-4 text-center">幾乎捨棄數位買量，經費全砸實機與線下</p>
                         <div class="chart-container"><canvas id="actualAllocChart"></canvas></div>
-                        <p class="text-xs text-teal mt-4 text-center">對比你剛才設定的預算，發現差異了嗎？</p>
+                        <p class="text-xs text-teal mt-4 text-center font-bold">對比你剛才設定的預算，你敢這麼極端嗎？</p>
                     </div>
                     <div class="glass-card p-6 flex flex-col items-center col-span-1 lg:col-span-2">
                         <h4 class="text-lg font-bold text-white mb-2">聲量與期待值演進 (2020-2024)</h4>
-                        <p class="text-xs text-gray-400 mb-4 text-center">四年磨一劍，每次曝光即是巔峰</p>
+                        <p class="text-xs text-gray-400 mb-4 text-center">四年磨一劍的脈衝式聲量操作</p>
                         <div class="chart-container"><canvas id="hypeChart"></canvas></div>
                     </div>
                 </div>
             </section>
 
             <section class="mb-20">
-                <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-purple pl-4">傳播矩陣與行銷框架</h3>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="glass-card p-6 flex flex-col items-center col-span-1">
-                        <h4 class="text-lg font-bold text-white mb-2">不同階段的媒體效能</h4>
-                        <p class="text-xs text-gray-400 mb-4 text-center">早期靠B站展硬實力，發售靠跨界破圈</p>
-                        <div class="chart-container"><canvas id="channelChart"></canvas></div>
-                    </div>
-                    <div class="col-span-1 lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-gray-800/60 p-5 rounded-lg border-t-2 border-teal">
-                            <h4 class="font-bold text-teal mb-2">1. 內容行銷 (PLG核心)</h4>
-                            <p class="text-sm text-gray-300">完全依賴極高畫質的「實機演示」。不刻意製作CG動畫欺騙玩家，用最硬核的技術實力引發玩家主動的病毒式傳播。</p>
+                <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-purple pl-4">行銷框架與深度解讀</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    <!-- Phase 1 -->
+                    <div class="bg-gray-800/60 p-6 rounded-xl border-t-4 border-teal hover:bg-gray-800 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-teal tracking-widest uppercase">Phase 1 (2020)</span>
+                                <h4 class="font-bold text-xl text-white mt-1">內容行銷 (PLG核心)</h4>
+                            </div>
+                            <button onclick="toggleDetails('detail-1')" class="text-xs bg-gray-700 hover:bg-teal hover:text-black px-3 py-1 rounded transition">深度解析 ↓</button>
                         </div>
-                        <div class="bg-gray-800/60 p-5 rounded-lg border-t-2 border-orange">
-                            <h4 class="font-bold text-orange mb-2">2. 體驗行銷 (信任建立)</h4>
-                            <p class="text-sm text-gray-300">面臨「畫大餅」質疑時，不花錢買廣告澄清。而是舉辦千人線下試玩與參加科隆展，讓玩家親手玩到，謠言不攻自破。</p>
-                        </div>
-                        <div class="bg-gray-800/60 p-5 rounded-lg border-t-2 border-purple">
-                            <h4 class="font-bold text-purple mb-2">3. 長線預期管理</h4>
-                            <p class="text-sm text-gray-300">建立「820」儀式感。每年只在固定節點釋出進度，克制發言，避免過度承諾導致發售時的口碑反噬。</p>
-                        </div>
-                        <div class="bg-gray-800/60 p-5 rounded-lg border-t-2 border-blue-400">
-                            <h4 class="font-bold text-blue-400 mb-2">4. 極限跨界聯名</h4>
-                            <p class="text-sm text-gray-300">發售期與瑞幸咖啡、滴滴等大眾品牌聯名。利用低單價快消品，將高門檻的3A遊戲轉化為「全民必須參與」的社會現象。</p>
+                        <p class="text-sm text-gray-300 mb-4">發布13分鐘實機演示，完全依賴極高畫質的「實機畫面」，用硬核技術實力引發玩家主動的病毒式傳播。</p>
+                        
+                        <div id="detail-1" class="expandable-details bg-black/50 p-4 rounded-lg border-l-2 border-teal text-sm text-gray-300">
+                            <strong class="text-teal block mb-2">💡 13分鐘背後的算計：</strong>
+                            傳統遊戲行銷的黃金法則是「2-3分鐘的CG動畫預告片」來吸引眼球。但遊戲科學反其道而行。長達13分鐘的實機影片不僅展示了戰鬥、UI，甚至保留了些許掉幀與瑕疵。這向硬核玩家傳遞了一個強烈且真實的信號：「我們是玩真的，不是做假動畫」。<br><br>
+                            在 B 站首發，迅速突破千萬播放，這不僅是一場行銷，更是一場「零成本的全國招聘會」，解決了初創團隊最缺人才的問題。
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <section>
-                <h3 class="text-2xl font-bold text-white mb-8 border-l-4 border-orange pl-4">時間軸：步步為營的四年</h3>
-                <div class="timeline-container space-y-6">
-                    <div class="relative glass-card p-5">
-                        <div class="timeline-dot top-6"></div>
-                        <span class="text-teal font-bold tracking-widest text-xs uppercase">Phase 1: 2020.08.20</span>
-                        <h4 class="text-lg font-bold text-white mt-1 mb-1">橫空出世：13分鐘實機演示</h4>
-                        <p class="text-gray-400 text-sm">毫無預熱直接釋出。目的在於「招聘」與「立威」，震撼業界。</p>
+                    <!-- Phase 2 -->
+                    <div class="bg-gray-800/60 p-6 rounded-xl border-t-4 border-purple hover:bg-gray-800 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-purple tracking-widest uppercase">Phase 2 (2021-2022)</span>
+                                <h4 class="font-bold text-xl text-white mt-1">長線預期管理</h4>
+                            </div>
+                            <button onclick="toggleDetails('detail-2')" class="text-xs bg-gray-700 hover:bg-purple hover:text-white px-3 py-1 rounded transition">深度解析 ↓</button>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4">建立「820」專屬節點。每年只在固定時間釋出開發進度，克制發言，避免過度承諾導致最終發售時的口碑反噬。</p>
+                        
+                        <div id="detail-2" class="expandable-details bg-black/50 p-4 rounded-lg border-l-2 border-purple text-sm text-gray-300">
+                            <strong class="text-purple block mb-2">💡 820的造神運動與風險：</strong>
+                            2021年，團隊大膽宣布引擎全面轉移至 Unreal Engine 5。在遊戲開發中期更換引擎是極度危險的行為，通常意味著發售遙遙無期。但他們透過實機展示了雪地場景的極致光影，在行銷上成功塑造了「精益求精、不妥協」的職人精神。<br><br>
+                            「飢餓行銷 + 定期餵食」的節奏，成功把控了玩家的期待閾值，讓市場始終保持高度關注卻不至於因過度曝光而疲乏。
+                        </div>
                     </div>
-                    <div class="relative glass-card p-5">
-                        <div class="timeline-dot top-6"></div>
-                        <span class="text-teal font-bold tracking-widest text-xs uppercase">Phase 2: 2021-2022</span>
-                        <h4 class="text-lg font-bold text-white mt-1 mb-1">預期管理：UE5與劇情展示</h4>
-                        <p class="text-gray-400 text-sm">定時定量釋出，展示技術升級，維持熱度並消除爛尾疑慮。</p>
+
+                    <!-- Phase 3 -->
+                    <div class="bg-gray-800/60 p-6 rounded-xl border-t-4 border-orange hover:bg-gray-800 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-orange tracking-widest uppercase">Phase 3 (2023)</span>
+                                <h4 class="font-bold text-xl text-white mt-1">體驗行銷 (信任驗證)</h4>
+                            </div>
+                            <button onclick="toggleDetails('detail-3')" class="text-xs bg-gray-700 hover:bg-orange hover:text-white px-3 py-1 rounded transition">深度解析 ↓</button>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4">面臨「畫大餅」質疑時，不花錢買廣告澄清。而是舉辦千人線下試玩與參加科隆展，讓玩家親手玩到，謠言不攻自破。</p>
+                        
+                        <div id="detail-3" class="expandable-details bg-black/50 p-4 rounded-lg border-l-2 border-orange text-sm text-gray-300">
+                            <strong class="text-orange block mb-2">💡 杭州試玩會的豪賭：</strong>
+                            2023年面臨「實機全是預渲染剪輯 (Fake Demo)」的巨大質疑。團隊豪擲千金在杭州舉辦了1000人的線下封閉試玩會。他們沒有準備完美的無敵模式，而是直接開放高難度Boss戰給玩家「受苦」。<br><br>
+                            就算現場偶爾出現Bug或卡頓，這種「真實的缺點」反而比完美的廣告更有說服力。隨後帶著相同的版本參加德國科隆展 (Gamescom)，用真實玩家大排長龍的畫面，一舉征服了海外媒體。
+                        </div>
                     </div>
-                    <div class="relative glass-card p-5">
-                        <div class="timeline-dot top-6"></div>
-                        <span class="text-teal font-bold tracking-widest text-xs uppercase">Phase 3: 2023.08</span>
-                        <h4 class="text-lg font-bold text-white mt-1 mb-1">信任驗證：千人線下試玩</h4>
-                        <p class="text-gray-400 text-sm">從看影片轉為真機遊玩，獲取權威媒體背書，粉碎假畫面謠言。</p>
+
+                    <!-- Phase 4 -->
+                    <div class="bg-gray-800/60 p-6 rounded-xl border-t-4 border-blue-400 hover:bg-gray-800 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-xs font-bold text-blue-400 tracking-widest uppercase">Phase 4 (2024 發售)</span>
+                                <h4 class="font-bold text-xl text-white mt-1">極限跨界聯名</h4>
+                            </div>
+                            <button onclick="toggleDetails('detail-4')" class="text-xs bg-gray-700 hover:bg-blue-400 hover:text-black px-3 py-1 rounded transition">深度解析 ↓</button>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4">發售期與瑞幸咖啡、滴滴出行等大眾品牌聯名。利用低單價快消品，將高門檻的3A遊戲轉化為社會現象。</p>
+                        
+                        <div id="detail-4" class="expandable-details bg-black/50 p-4 rounded-lg border-l-2 border-blue-400 text-sm text-gray-300">
+                            <strong class="text-blue-400 block mb-2">💡 瑞幸聯名的現象級破圈：</strong>
+                            單機動作遊戲本質上是小眾市場。為了突破銷量天花板，他們選擇了與瑞幸咖啡合作推出「黑神話騰雲美式」與實體周邊 (3D閃卡等)。<br><br>
+                            咖啡作為高頻、低單價的日常快消品，瞬間將遊戲資訊推送到千千萬萬「平時不玩單機遊戲」的上班族眼前。首日聯名商品遭到秒殺，甚至導致瑞幸點單系統崩潰。這場聯名成功利用了「社交話題性」與民族情緒，將發售日變成了一場全民狂歡，達成破千萬銷量的傳奇。
+                        </div>
                     </div>
-                    <div class="relative glass-card p-5">
-                        <div class="timeline-dot top-6"></div>
-                        <span class="text-teal font-bold tracking-widest text-xs uppercase">Phase 4: 2024.08 發售</span>
-                        <h4 class="text-lg font-bold text-white mt-1 mb-1">破圈收割：瑞幸聯名與全球解禁</h4>
-                        <p class="text-gray-400 text-sm">利用民族情緒與極高話題性，結合異業結盟，達成千萬銷量傳奇。</p>
-                    </div>
+
                 </div>
             </section>
         </div>
@@ -365,12 +420,11 @@ CHART SELECTION JUSTIFICATION (NO SVG):
     </footer>
 
     <script>
+        // --- Utility Functions ---
         function processLabel(label) {
             if (label.length <= 16) return label;
             const lines = [];
-            for (let i = 0; i < label.length; i += 16) {
-                lines.push(label.substring(i, i + 16));
-            }
+            for (let i = 0; i < label.length; i += 16) { lines.push(label.substring(i, i + 16)); }
             return lines;
         }
 
@@ -388,8 +442,45 @@ CHART SELECTION JUSTIFICATION (NO SVG):
         Chart.defaults.color = '#F3F4F6';
         Chart.defaults.font.family = "'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif";
 
+        // --- Canvas Analysis Logic ---
+        function analyzeCanvas() {
+            const btn = document.getElementById('analyze-btn');
+            const q1 = document.getElementById('canvas-q1').value.trim();
+            const q2 = document.getElementById('canvas-q2').value.trim();
+            const q3 = document.getElementById('canvas-q3').value.trim();
+            const q4 = document.getElementById('canvas-q4').value.trim();
+            const totalChars = q1.length + q2.length + q3.length + q4.length;
+
+            if (totalChars === 0) {
+                alert("請至少填寫一些行銷想法，系統才能為您分析！");
+                return;
+            }
+
+            btn.classList.add('hidden-content');
+            document.getElementById('diagnosis-loading').classList.remove('hidden-content');
+            document.getElementById('diagnosis-loading').classList.add('show-content');
+
+            setTimeout(() => {
+                document.getElementById('diagnosis-loading').classList.remove('show-content');
+                document.getElementById('diagnosis-loading').classList.add('hidden-content');
+                
+                const resultPanel = document.getElementById('diagnosis-result');
+                const summaryText = document.getElementById('diagnosis-summary');
+                
+                if (totalChars < 50) {
+                    summaryText.innerHTML = "您的企劃字數總計較少，策略輪廓已建立，但在競爭激烈的遊戲市場中，可能缺乏具體的執行細節與護城河。建議參考下方檢核點深化您的策略。";
+                } else {
+                    summaryText.innerHTML = `太棒了！您輸入了 ${totalChars} 字的行銷企劃。系統偵測到您已具備完整的四階段佈局意識。但在將計畫投入千萬預算之前，我們為您抓取了幾個潛在的戰略盲區：`;
+                }
+
+                resultPanel.classList.remove('hidden-content');
+                resultPanel.classList.add('show-content');
+            }, 1500);
+        }
+
+        // --- Simulator Logic ---
         let simChartInstance = null;
-        let actualAllocCtx, hypeCtx, channelCtx;
+        let actualAllocCtx, hypeCtx;
         let chartsInitialized = false;
 
         function initSimChart() {
@@ -444,13 +535,13 @@ CHART SELECTION JUSTIFICATION (NO SVG):
                 title = "🏆 極致產品驅動 (類黑神話模式)"; desc = "重壓內容研發與線下驗證。放棄傳統廣告，靠純粹的產品實力與口碑引爆全球。風險極高，但回報驚人。";
                 bg = "bg-teal/10"; border = "border-teal/30"; tc = "text-teal";
             } else if (a >= 45 && c < 25) {
-                title = "💸 流量買量模式 (傳統手遊套路)"; desc = "高度依賴數位廣告轟炸。短期能獲取大量點擊與下載，但若產品內容不足，留存率與口碑會迅速崩盤。";
+                title = "💸 流量買量模式 (傳統手遊套路)"; desc = "高度依賴數位廣告轟炸。短期能獲取大量曝光，但若產品內容不足，玩家留存率與口碑會迅速崩盤。";
                 bg = "bg-red-500/10"; border = "border-red-500/30"; tc = "text-red-400";
             } else if (x >= 40) {
-                title = "🥤 過度包裝模式 (網紅炒作)"; desc = "過早或過度投入異業結盟。產品本身尚未建立核心玩家信任前過度大眾化，易淪為空洞的行銷噱頭。";
+                title = "🥤 過度包裝模式 (網紅炒作)"; desc = "過早或過度投入異業結盟。產品本身尚未建立核心玩家信任前就過度大眾化，極易淪為空洞的行銷噱頭。";
                 bg = "bg-orange/10"; border = "border-orange/30"; tc = "text-orange";
             } else if (c > 75) {
-                title = "🛠️ 閉門造車模式 (技術宅悲歌)"; desc = "幾乎所有資源都在做內容，忽視了公關、大眾觸達與跨界。這會成為一款「叫好」的神作，但不一定能破圈「叫座」。";
+                title = "🛠️ 閉門造車模式 (技術宅悲歌)"; desc = "幾乎所有資源都在做內容，忽視了公關與大眾觸達。這會成為一款核心圈「叫好」的神作，但不一定能破圈「叫座」。";
                 bg = "bg-purple/10"; border = "border-purple/30"; tc = "text-purple";
             } else {
                 title = "⚖️ 中庸保守模式"; desc = "資源平均分散。相對安全的做法，但也難以在競爭激烈的市場中創造破圈的爆發力。建議找出一個核心突破口。";
@@ -460,6 +551,7 @@ CHART SELECTION JUSTIFICATION (NO SVG):
             fb.innerHTML = `<h5 class="text-lg font-bold mb-1 ${tc}">${title}</h5><p class="text-gray-300 text-sm">${desc}</p>`;
         }
 
+        // --- Real Case Logic ---
         function initRevealCharts() {
             if (chartsInitialized) return;
             chartsInitialized = true;
@@ -500,23 +592,6 @@ CHART SELECTION JUSTIFICATION (NO SVG):
                     scales: { y: { beginAtZero: true, max: 110, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
                 }
             });
-
-            channelCtx = document.getElementById('channelChart').getContext('2d');
-            new Chart(channelCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['長影音平台', '泛社群媒體', '直播實況', '權威遊戲媒體', '實體線下'].map(processLabel),
-                    datasets: [
-                        { label: '預熱期影響力', data: [10, 6, 3, 5, 2], backgroundColor: 'rgba(179, 136, 255, 0.4)', borderColor: '#B388FF', borderWidth: 2 },
-                        { label: '發售期影響力', data: [8, 10, 10, 8, 9], backgroundColor: 'rgba(255, 109, 0, 0.4)', borderColor: '#FF6D00', borderWidth: 2 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels:{boxWidth:12, font:{size:10}} }, tooltip: commonTooltipConfig },
-                    scales: { r: { angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#F3F4F6', font: { size: 10 } }, ticks: { display: false, max: 10, min: 0 } } }
-                }
-            });
         }
 
         function revealTruth() {
@@ -528,6 +603,15 @@ CHART SELECTION JUSTIFICATION (NO SVG):
             setTimeout(() => {
                 revealSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
+        }
+
+        function toggleDetails(id) {
+            const element = document.getElementById(id);
+            if (element.classList.contains('expanded')) {
+                element.classList.remove('expanded');
+            } else {
+                element.classList.add('expanded');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => { 
